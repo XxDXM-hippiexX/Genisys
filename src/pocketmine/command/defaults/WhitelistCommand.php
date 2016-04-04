@@ -35,7 +35,7 @@ class WhitelistCommand extends VanillaCommand{
 			"%commands.whitelist.usage",
 			["wl"]
 		);
-		$this->setPermission("pocketmine.command.whitelist.reload;pocketmine.command.whitelist.enable;pocketmine.command.whitelist.disable;pocketmine.command.whitelist.list;pocketmine.command.whitelist.add;pocketmine.command.whitelist.remove");
+		$this->setPermission("pocketmine.command.whitelist.*;pocketmine.command.whitelist.reload;pocketmine.command.whitelist.enable;pocketmine.command.whitelist.disable;pocketmine.command.whitelist.list;pocketmine.command.whitelist.add;pocketmine.command.whitelist.remove");
 	}
 
 	public function execute(CommandSender $sender, $currentAlias, array $args){
@@ -59,11 +59,13 @@ class WhitelistCommand extends VanillaCommand{
 
 					return true;
 				case "on":
+			        case "enable":
 					$sender->getServer()->setConfigBool("white-list", true);
 					Command::broadcastCommandMessage($sender, new TranslationContainer("commands.whitelist.enabled"));
 
 					return true;
 				case "off":
+				case "disable":
 					$sender->getServer()->setConfigBool("white-list", false);
 					Command::broadcastCommandMessage($sender, new TranslationContainer("commands.whitelist.disabled"));
 
@@ -110,7 +112,7 @@ class WhitelistCommand extends VanillaCommand{
 	}
 
 	private function badPerm(CommandSender $sender, $perm){
-		if(!$sender->hasPermission("pocketmine.command.whitelist.$perm")){
+		if(!$sender->hasPermission("pocketmine.command.whitelist.$perm") and !$sender->hasPermission("pocketmine.command.whitelist.*")){
 			$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.permission"));
 
 			return true;
